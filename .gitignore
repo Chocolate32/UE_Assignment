@@ -1,0 +1,10 @@
+.vs/
+Backup/
+Binaries/
+DerivedDataCache/
+Intermediate/
+Saved/
+Platforms/
+.vsconfig
+*.sln
+*.htm
