@@ -4,9 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "Engine/EngineBaseTypes.h"
 #include "TP_WeaponComponent.generated.h"
 
 class AUE_AssignmentCharacter;
+enum class RangeStatus : uint8;
 
 UCLASS(Blueprintable, BlueprintType, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class UE_ASSIGNMENT_API UTP_WeaponComponent : public USkeletalMeshComponent
@@ -38,6 +40,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	class UInputAction* FireAction;
 
+
 	/** Sets default values for this component's properties */
 	UTP_WeaponComponent();
 
@@ -49,12 +52,21 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Weapon")
 	void Fire();
 
+	//UFUNCTION()
+	//virtual void TickComponent(float DeltaTime,enum ELevelTick TickType,
+	//	FActorComponentTickFunction &ThisTickFunction) override;
 protected:
 	/** Ends gameplay for this component. */
 	UFUNCTION()
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
+
 private:
 	/** The Character holding this weapon*/
 	AUE_AssignmentCharacter* Character;
+
+	RangeStatus CharacterRange;
+
+	UFUNCTION()
+	void UpdateCharacterRange(const RangeStatus& e);
 };
