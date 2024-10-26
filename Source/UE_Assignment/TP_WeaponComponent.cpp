@@ -37,11 +37,10 @@ void UTP_WeaponComponent::Fire()
 			Character->Grab();
 		}
 		else if (CharacterRange == RangeStatus::Pull) {
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, "You are within pull Range!");
+			Character->Pull(pullStrengh);
 		}
 		else {
 
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "You are far away!");
 			// Try and fire a projectile
 			if (ProjectileClass != nullptr)
 			{
@@ -81,7 +80,24 @@ void UTP_WeaponComponent::Fire()
 		}
 	}
 	else {
-		Character->ShootObject();
+		Character->ShootObject(shootingStrengh);
+
+		// Try and play the sound if specified
+		if (ObjectFireSound != nullptr)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, ObjectFireSound, Character->GetActorLocation());
+		}
+
+		// Try and play a firing animation if specified
+		if (FireAnimation != nullptr)
+		{
+			// Get the animation object for the arms mesh
+			UAnimInstance* AnimInstance = Character->GetMesh1P()->GetAnimInstance();
+			if (AnimInstance != nullptr)
+			{
+				AnimInstance->Montage_Play(FireAnimation, 1.f);
+			}
+		}
 	}
 
 
@@ -100,7 +116,9 @@ bool UTP_WeaponComponent::AttachWeapon(AUE_AssignmentCharacter* TargetCharacter)
 	// Attach the weapon to the First Person Character
 	FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true);
 	AttachToComponent(Character->GetMesh1P(), AttachmentRules, FName(TEXT("GripPoint")));
-	Character->UpdateHasWeaponAttached();
+
+	//feed grab distance and pull distance to the player!
+	Character->OnWeaponAttached(grabDistance, grabDistance* pullDistanceMultiplier);
 
 	// add the weapon as an instance component to the character
 	Character->AddInstanceComponent(this);
@@ -121,6 +139,7 @@ bool UTP_WeaponComponent::AttachWeapon(AUE_AssignmentCharacter* TargetCharacter)
 		}
 	}
 
+	//Register event to catch value change!
 	Character->OnRangeStatusUpdate.AddDynamic(this, &UTP_WeaponComponent::UpdateCharacterRange);
 	//Character->OnRangeStatusUpdate.AddUnique(&UTP_WeaponComponent::UpdateCharacterRange);
 

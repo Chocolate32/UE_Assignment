@@ -18,6 +18,7 @@ struct FInputActionValue;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
+//I didn't figure out how to make it visible in blueprints yet!
 UENUM(BlueprintType)
 enum class RangeStatus :uint8
 {
@@ -75,15 +76,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = UI)
 	TSubclassOf<class UCrosshairParent> CrosshairWidgetClass;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float grabDistance;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float pullDistanceMultiplier;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float shootingStrengh;
-
 	UPROPERTY(BlueprintAssignable)
 	FOnRangeStatusUpdate OnRangeStatusUpdate;
 
@@ -107,13 +99,13 @@ public:
 
 	UPrimitiveComponent* HeldObject;
 
-	void UpdateHasWeaponAttached();
+	void OnWeaponAttached(const float &grabValue, const float &pullValue);
 	
 	void Grab();
 
-	void Pull();
+	void Pull(const float& power);
 
-	void ShootObject();
+	void ShootObject(const float& power);
 
 private:
 	bool bHasWeaponAttached{ false };
@@ -123,6 +115,10 @@ private:
 	bool TraceObjects(const float& distance, FHitResult& hit);
 
 	RangeStatus currentStatus{ RangeStatus::None };
+	
+	float grabDistance;
+
+	float pullDistance;
 
 
 };

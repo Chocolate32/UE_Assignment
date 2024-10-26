@@ -23,6 +23,10 @@ public:
 	/** Sound to play each time we fire */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay)
 	USoundBase* FireSound;
+
+	/** Sound to play each time we fire */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	USoundBase* ObjectFireSound;
 	
 	/** AnimMontage to play each time we fire */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
@@ -40,6 +44,17 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	class UInputAction* FireAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float grabDistance;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float pullDistanceMultiplier;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float shootingStrengh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float pullStrengh;
 
 	/** Sets default values for this component's properties */
 	UTP_WeaponComponent();

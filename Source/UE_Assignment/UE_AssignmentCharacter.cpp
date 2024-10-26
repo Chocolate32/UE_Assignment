@@ -71,7 +71,7 @@ void AUE_AssignmentCharacter::Tick(float DeltaTime) {
 					//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, "You are within Grab Range!");
 				}
 			}
-			else if (TraceObjects(grabDistance * pullDistanceMultiplier, hitResult)) {
+			else if (TraceObjects(pullDistance, hitResult)) {
 				if (currentStatus != RangeStatus::Pull) {
 					currentStatus = RangeStatus::Pull;
 					OnRangeStatusUpdate.Broadcast(currentStatus);
@@ -164,12 +164,15 @@ bool AUE_AssignmentCharacter::TraceObjects(const float& distance, FHitResult& hi
 	return didHit;
 }
 
-void AUE_AssignmentCharacter::UpdateHasWeaponAttached() {
+void AUE_AssignmentCharacter::OnWeaponAttached(const float &grabValue, const float &pullValue) {
 	bHasWeaponAttached = true;
 
 	//Character now is holding a weapon so he need the crosshairWidget to appear!
 	CrosshairWidget = CreateWidget<UCrosshairParent>(GetWorld(), CrosshairWidgetClass);
 	if (CrosshairWidget != nullptr)	CrosshairWidget->AddToViewport();
+
+	grabDistance = grabValue;
+	pullDistance = pullValue;
 }
 
 void AUE_AssignmentCharacter::Grab() {
@@ -183,18 +186,22 @@ void AUE_AssignmentCharacter::Grab() {
 	HeldObject->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
 }
 
-void AUE_AssignmentCharacter::Pull() {
+void AUE_AssignmentCharacter::Pull(const float& power) {
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
 
+	FVector direction = -PlayerController->PlayerCameraManager->GetActorForwardVector() * power;
+
+	hitResult.GetComponent()->AddImpulse(direction, hitResult.BoneName);
 }
 
-void AUE_AssignmentCharacter::ShootObject() {
+void AUE_AssignmentCharacter::ShootObject(const float& power) {
 	PhysicsConstraint->BreakConstraint();
 
 	HeldObject->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Block);
 
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
 
-	FVector direction = PlayerController->PlayerCameraManager->GetActorForwardVector() * shootingStrengh;
+	FVector direction = PlayerController->PlayerCameraManager->GetActorForwardVector() * power;
 
 	//HeldObject->AddImpulseAtLocation(direction, hitResult.ImpactPoint, hitResult.BoneName);
 	HeldObject->AddImpulse(direction, hitResult.BoneName);
