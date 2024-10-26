@@ -208,3 +208,13 @@ void AUE_AssignmentCharacter::ShootObject(const float& power) {
 
 	HeldObject = nullptr;
 }
+
+void AUE_AssignmentCharacter::Release() {
+	if (HeldObject != nullptr) {
+		PhysicsConstraint->BreakConstraint();
+
+		HeldObject->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Block);
+
+		HeldObject = nullptr;
+	}
+}

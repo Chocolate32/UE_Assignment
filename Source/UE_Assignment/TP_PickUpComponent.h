@@ -23,6 +23,8 @@ public:
 	FOnPickUp OnPickUp;
 
 	UTP_PickUpComponent();
+
+	void UpdateRadius(const float& radius);
 protected:
 
 	/** Called when the game starts */

@@ -44,16 +44,20 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	class UInputAction* FireAction;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	/** Fire Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* ReleaseAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float grabDistance;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float pullDistanceMultiplier;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float shootingStrengh;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float pullStrengh;
 
 	/** Sets default values for this component's properties */
@@ -66,6 +70,7 @@ public:
 	/** Make the weapon Fire a Projectile */
 	UFUNCTION(BlueprintCallable, Category="Weapon")
 	void Fire();
+
 
 	//UFUNCTION()
 	//virtual void TickComponent(float DeltaTime,enum ELevelTick TickType,
@@ -81,6 +86,8 @@ private:
 	AUE_AssignmentCharacter* Character;
 
 	RangeStatus CharacterRange;
+
+	float strenghMultiplier{ 1000.f };
 
 	UFUNCTION()
 	void UpdateCharacterRange(const RangeStatus& e);

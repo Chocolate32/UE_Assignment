@@ -37,7 +37,7 @@ void UTP_WeaponComponent::Fire()
 			Character->Grab();
 		}
 		else if (CharacterRange == RangeStatus::Pull) {
-			Character->Pull(pullStrengh);
+			Character->Pull(pullStrengh * strenghMultiplier);
 		}
 		else {
 
@@ -80,7 +80,7 @@ void UTP_WeaponComponent::Fire()
 		}
 	}
 	else {
-		Character->ShootObject(shootingStrengh);
+		Character->ShootObject(shootingStrengh * strenghMultiplier);
 
 		// Try and play the sound if specified
 		if (ObjectFireSound != nullptr)
@@ -136,6 +136,9 @@ bool UTP_WeaponComponent::AttachWeapon(AUE_AssignmentCharacter* TargetCharacter)
 		{
 			// Fire
 			EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &UTP_WeaponComponent::Fire);
+
+			//Release
+			EnhancedInputComponent->BindAction(ReleaseAction, ETriggerEvent::Triggered, Character, &AUE_AssignmentCharacter::Release);
 		}
 	}
 

@@ -8,6 +8,11 @@ UTP_PickUpComponent::UTP_PickUpComponent()
 	SphereRadius = 32.f;
 }
 
+void UTP_PickUpComponent::UpdateRadius(const float& radius)
+{
+	SetSphereRadius(radius);
+}
+
 void UTP_PickUpComponent::BeginPlay()
 {
 	Super::BeginPlay();

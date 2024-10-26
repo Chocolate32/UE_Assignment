@@ -107,6 +107,9 @@ public:
 
 	void ShootObject(const float& power);
 
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+	void Release();
+
 private:
 	bool bHasWeaponAttached{ false };
 
@@ -119,7 +122,5 @@ private:
 	float grabDistance;
 
 	float pullDistance;
-
-
 };
 
