@@ -3,7 +3,9 @@
 
 #include "PickUpActor.h"
 #include "TP_PickUpComponent.h"
-#include "Components/StaticMeshComponent.h"
+#include "PickUpSpawner.h"
+#include "Kismet/GameplayStatics.h"
+#include "Components/BillboardComponent.h"
 
 // Sets default values
 APickUpActor::APickUpActor()
@@ -13,9 +15,13 @@ APickUpActor::APickUpActor()
 
 	PickUpCollision = CreateDefaultSubobject < UTP_PickUpComponent> (TEXT("SphereCollision"));
 	PickUpCollision->SetupAttachment(GetRootComponent());
+	PickUpCollision->SetCollisionResponseToChannel(ECollisionChannel::ECC_PhysicsBody, ECollisionResponse::ECR_Ignore);
 
-	PickUpMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PickUpMesh"));
-	PickUpMesh->SetupAttachment(PickUpCollision);
+	Billboard = CreateDefaultSubobject<UBillboardComponent>(TEXT("Image"));
+	Billboard->SetupAttachment(PickUpCollision);
+	Billboard->SetHiddenInGame(false);
+	if (PickUpImage != nullptr)	Billboard->SetSprite(PickUpImage);
+
 
 }
 
@@ -27,6 +33,10 @@ void APickUpActor::BeginPlay()
 	//PickUpCollision->AddLocalOffset(FVector(0.f, 0.f, radius));
 
 	PickUpCollision->UpdateRadius(radius);
+
+	if (PickUpImage != nullptr)		Billboard->SetSprite(PickUpImage);
+
+	if (SpawnSound != nullptr)		UGameplayStatics::PlaySoundAtLocation(this, SpawnSound, GetActorLocation());
 }
 
 // Called every frame
@@ -34,6 +44,21 @@ void APickUpActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	PickUpMesh->AddWorldRotation(FRotator(0.f, meshRotationSpeed/100.f, 0.f));
+	angle += DeltaTime * FloatingSpeed;
+	
+
+	Billboard->AddRelativeLocation(FVector(0.f, 0.f, FMath::Cos(angle) * FloatingStrengh));
+
+	if (angle > 360.f)	angle -= 360.f;
 }
 
+void APickUpActor::SetSpawnerActor(class APickUpSpawner* actor) {
+	SpawnerActor = actor;
+}
+
+void APickUpActor::EndPlay(const EEndPlayReason::Type EndPlayReason) {
+	Super::EndPlay(EndPlayReason);
+
+	if (SpawnerActor != nullptr)
+		SpawnerActor->AllowSpawn();
+}
