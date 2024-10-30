@@ -20,6 +20,9 @@ class UE_ASSIGNMENT_API APickUpSpawner : public AActor
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Config, meta = (AllowPrivateAccess = "true"))
 	float SpawnDuration{ 10.f };
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Config, meta = (AllowPrivateAccess = "true"))
+	bool OnHold{ false };
+
 	float timeTracked{ 0.f };
 
 	bool canSpawn{ true };

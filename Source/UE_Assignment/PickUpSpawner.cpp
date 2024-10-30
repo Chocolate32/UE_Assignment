@@ -24,6 +24,8 @@ void APickUpSpawner::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (OnHold)	return;
+
 	if (canSpawn) {
 		if (timeTracked >= SpawnDuration) {
 
@@ -32,7 +34,9 @@ void APickUpSpawner::Tick(float DeltaTime)
 
 				FVector SpawnLocation = SpawnPoints[FMath::Rand() % SpawnPoints.Num()] + GetActorLocation();
 
-				world->SpawnActor<APickUpActor>(PickUpClass, SpawnLocation, FRotator::ZeroRotator)->SetSpawnerActor(this);
+				APickUpActor* PickUp = world->SpawnActor<APickUpActor>(PickUpClass, SpawnLocation, FRotator::ZeroRotator);
+
+				PickUp->SetSpawnerActor(this);
 				
 				canSpawn = false;
 			}
@@ -45,7 +49,7 @@ void APickUpSpawner::Tick(float DeltaTime)
 
 void APickUpSpawner::AllowSpawn() {
 
-	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "It's about to be destroyed");
+	//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "It's about to be destroyed");
 
 	canSpawn = true;
 }

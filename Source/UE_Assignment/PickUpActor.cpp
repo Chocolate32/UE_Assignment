@@ -52,7 +52,7 @@ void APickUpActor::Tick(float DeltaTime)
 	if (angle > 360.f)	angle -= 360.f;
 }
 
-void APickUpActor::SetSpawnerActor(class APickUpSpawner* actor) {
+void APickUpActor::SetSpawnerActor(APickUpSpawner* actor) {
 	SpawnerActor = actor;
 }
 
